@@ -21,7 +21,7 @@
                 <div class="d-flex mb-3">
                     @if (signInManager.IsSignedIn(User))
                     {
-                        if(Model.Liked)
+                        if (Model.Liked)
                         {
                             <a style="cursor:pointer">
                                 <i class="bi bi-hand-thumbs-up-fill"></i>'
@@ -36,7 +36,7 @@
 
                             </a>
                         }
-                        
+
 
                     }
                     <span id="totalLikes" class="ms-2">@Model.Likes likes</span>
@@ -54,6 +54,50 @@
 
                     @Html.Raw(Model.Content)
                 </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Comments</h5>
+                        @if (signInManager.IsSignedIn(User))
+                        {
+                            <form method="post">
+                                <div class="mb-3">
+                                    <label class="form-label">Comment Description</label>
+                                    <input type="text" class="form-control" asp-for="CommentDescription" />
+                                </div>
+                                <div class="mb-3">
+                                    <button type="submit" class="btn btn-dark">Submit</button>
+                                    <input type="hidden" asp-for="Id" />
+                                    <input type="hidden" asp-for="UrlHandle" />
+                                </div>
+                            </form>
+                        }
+                    </div>
+                    <div class="card-body">
+                        @if (Model.Comments != null && Model.Comments.Any())
+                        {
+                            @foreach(var comment in Model.Comments)
+                            {
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <div>
+                                            @comment.Description
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span class="text-secondary">@comment.Username</span>
+                                            <span class="text-secondary">@comment.DateAdded.ToShortDateString()</span>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                          
+                        }
+
+                    </div>
+
+                </div>
+
+
             }
             else
             {
@@ -77,7 +121,7 @@
                 }
 
             }).then(data => data.json()).then(result => totalLikeElement.innerHTML = result);
-        
+
         }
         async function addLikeForBlog() {
             fetch('/api/BlogPostLike/Add', {
@@ -87,7 +131,7 @@
                     'Content-Type': 'application/json',
                     'Accept': '*/*'
                 },
-                body: JSON.stringify({ BlogPostId: '@Model.Id', UserId: '@userManager.GetUserId(User)'})
+                body: JSON.stringify({ BlogPostId: '@Model.Id', UserId: '@userManager.GetUserId(User)' })
             }).then(() => {
 
                 btnLikeElement.innerHTML = '<i class="bi bi-hand-thumbs-up-fill"></i>';
@@ -97,7 +141,7 @@
 
 
         }
-        
+
         btnLikeElement.addEventListener('click', addLikeForBlog);
     </script>
 }
